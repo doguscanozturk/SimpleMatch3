@@ -25,7 +25,7 @@ void ABezierMovementManager::Tick(float DeltaTime)
 		if (Bm->GetPercentage() >= 1.f)
 		{
 			Bm->SetComplete();
-			(void)Bm->OnComplete.ExecuteIfBound();
+			Bm->OnComplete.Broadcast();
 			ActiveMovements.erase(ActiveMovements.begin() + i);
 		}
 	}

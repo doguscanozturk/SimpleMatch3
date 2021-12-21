@@ -62,12 +62,13 @@ void AMatch3Initializer::Uninitialize()
 	GEngine->ForceGarbageCollection();
 }
 
+
 void AMatch3Initializer::BeginPlay()
 {
 	Super::BeginPlay();
 
 	GameInstance = Cast<USimpleMatch3GameInstance>(GetGameInstance());
-	GameInstance->OnRestartClicked.BindUObject(this, &AMatch3Initializer::HandleRestartClicked);
+	GameInstance->OnRestartClicked.AddUObject(this, &AMatch3Initializer::HandleRestartClicked);
 
 	GridController = Cast<AGridController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	GridController->SetViewTargetWithBlend(MainCamera);

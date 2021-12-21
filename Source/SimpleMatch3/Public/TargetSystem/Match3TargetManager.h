@@ -26,16 +26,16 @@ class UMatch3TargetManager : public UObject
 	GENERATED_BODY()
 	
 public:
-	DECLARE_DELEGATE_OneParam(FOnTargetsInitialized, std::vector<UTargetData*>)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetsInitialized, std::vector<UTargetData*>)
 	FOnTargetsInitialized OnTargetsInitialized;
 	
-	DECLARE_DELEGATE_OneParam(FOnTargetUpdated, const UTargetData*)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetUpdated, const UTargetData*)
 	FOnTargetUpdated OnATargetUpdated;
 	
-	DECLARE_DELEGATE_OneParam(FOnATargetComplete, const UTargetData*)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnATargetComplete, const UTargetData*)
 	FOnATargetComplete OnATargetComplete;
 	
-	DECLARE_DELEGATE(FOnAllTargetsComplete)
+	DECLARE_EVENT(UMatch3TargetManager, FOnAllTargetsComplete)
 	FOnAllTargetsComplete OnAllTargetsComplete;
 	
 	void Initialize(ABoardFlowManager* BoardFlowManager);

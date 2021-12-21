@@ -17,7 +17,7 @@ public:
 
 	void Clear();
 
-	DECLARE_DELEGATE_OneParam(FOnPiecesDestroyed, vector<EPieceType>)
+	DECLARE_EVENT_OneParam(ABoardFlowManager, FOnPiecesDestroyed, vector<EPieceType>)
 	FOnPiecesDestroyed OnPiecesDestroyed;
 	
 protected:

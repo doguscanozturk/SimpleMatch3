@@ -9,7 +9,7 @@ class UBezierMovement : public UObject
 	GENERATED_BODY()
 	
 public:
-	DECLARE_DELEGATE(FOnComplete);
+	DECLARE_EVENT(UBezierMovement, FOnComplete);
 	FOnComplete OnComplete;
 
 	UPROPERTY()

@@ -11,10 +11,10 @@ class SIMPLEMATCH3_API AGridController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	DECLARE_DELEGATE_TwoParams(FOnSwipeApproved, ATile*, ESwipeDirection)
+	DECLARE_EVENT_TwoParams(AGridController, FOnSwipeApproved, ATile*, ESwipeDirection)
 	FOnSwipeApproved OnSwipeApproved;
 
-	DECLARE_DELEGATE_OneParam(FOnTileTouched, ATile*)
+	DECLARE_EVENT_OneParam(AGridController, FOnTileTouched, ATile*)
 	FOnTileTouched OnTileTouched;
 	
 	AGridController(const FObjectInitializer& ObjectInitializer);

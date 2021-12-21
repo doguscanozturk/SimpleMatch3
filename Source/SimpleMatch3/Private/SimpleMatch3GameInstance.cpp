@@ -20,5 +20,5 @@ void USimpleMatch3GameInstance::Clear()
 
 void USimpleMatch3GameInstance::TriggerRestartClicked()
 {
-	(void)OnRestartClicked.ExecuteIfBound();
+	OnRestartClicked.Broadcast();
 }

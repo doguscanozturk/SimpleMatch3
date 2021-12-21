@@ -13,7 +13,7 @@ void ABoardFlowManager::Initialize(UTileGrid* tileGrid, UBasicMatch3ToolProvider
 {
 	TileGrid = tileGrid;
 	BasicMatch3ToolProvider = basicMatch3ToolProvider;
-	gridController->OnSwipeApproved.BindUObject(this, &ABoardFlowManager::TrySwapTiles);
+	gridController->OnSwipeApproved.AddUObject(this, &ABoardFlowManager::TrySwapTiles);
 }
 
 void ABoardFlowManager::Clear()
@@ -47,7 +47,7 @@ void ABoardFlowManager::SwapTiles(ATile* TileA, ATile* TileB, const bool CanTrig
 
 	if (CanTriggerRevertSwap)
 	{
-		MovementB->OnComplete.BindLambda([this, TileA, TileB]
+		MovementB->OnComplete.AddLambda([this, TileA, TileB]
 		{
 			FTimerHandle ThisHandle;
 			GetGameInstance()->GetTimerManager().SetTimer(ThisHandle, FTimerDelegate::CreateLambda([this, TileA, TileB]
@@ -101,7 +101,7 @@ bool ABoardFlowManager::CheckMatch(ATile* CheckTile) const
 						}
 					}
 
-					(void)OnPiecesDestroyed.ExecuteIfBound(AffectedPieceTypes);
+					OnPiecesDestroyed.Broadcast(AffectedPieceTypes);
 
 					OnTilesAreEmpty(AffectedTiles);
 				}), 0.2f + GameplayConstants::LengthOfAFrame60 * 2, false);
@@ -200,7 +200,7 @@ void ABoardFlowManager::MovePiece(ATile* StartTile, ATile* EndTile, const float 
 
 	const auto Movement = BasicMatch3ToolProvider->BezierMovementManager->StartMovement(
 		StartPosition, EndTile->GetActorLocation(), Duration, Piece);
-	Movement->OnComplete.BindLambda([=]
+	Movement->OnComplete.AddLambda([=]
 	{
 		EndTile->IsTargetedByMovingPiece = false;
 		OnPieceMovementCompleted(EndTile, Piece);

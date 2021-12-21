@@ -17,7 +17,7 @@ public:
 	UPROPERTY()
 	UBasicMatch3ToolProvider* BasicMatch3ToolProvider;
 
-	DECLARE_DELEGATE(FOnRestartClicked)
+	DECLARE_EVENT(USimpleMatch3GameInstance, FOnRestartClicked)
 	FOnRestartClicked OnRestartClicked;
 
 private:

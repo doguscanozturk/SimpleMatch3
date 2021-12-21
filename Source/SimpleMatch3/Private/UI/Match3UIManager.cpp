@@ -12,10 +12,10 @@ void UMatch3UIManager::Initialize(UMatch3TargetManager* Match3TargetManager, UPi
 
 	PieceVariations = pieceVariations;
 
-	Match3TargetManager->OnTargetsInitialized.BindUObject(this, &UMatch3UIManager::HandleTargetsInitialized);
-	Match3TargetManager->OnATargetUpdated.BindUObject(this, &UMatch3UIManager::HandleATargetUpdated);
-	Match3TargetManager->OnATargetComplete.BindUObject(this, &UMatch3UIManager::HandleATargetComplete);
-	Match3TargetManager->OnAllTargetsComplete.BindUObject(this, &UMatch3UIManager::HandleAllTargetsComplete);
+	Match3TargetManager->OnTargetsInitialized.AddUObject(this, &UMatch3UIManager::HandleTargetsInitialized);
+	Match3TargetManager->OnATargetUpdated.AddUObject(this, &UMatch3UIManager::HandleATargetUpdated);
+	Match3TargetManager->OnATargetComplete.AddUObject(this, &UMatch3UIManager::HandleATargetComplete);
+	Match3TargetManager->OnAllTargetsComplete.AddUObject(this, &UMatch3UIManager::HandleAllTargetsComplete);
 }
 
 void UMatch3UIManager::Clear()

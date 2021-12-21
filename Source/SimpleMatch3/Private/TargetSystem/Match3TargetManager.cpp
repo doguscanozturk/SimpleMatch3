@@ -4,16 +4,16 @@
 
 void UMatch3TargetManager::Initialize(ABoardFlowManager* BoardFlowManager)
 {
-	BoardFlowManager->OnPiecesDestroyed.BindUObject(this, &UMatch3TargetManager::HandlePiecesDestroyed);
+	BoardFlowManager->OnPiecesDestroyed.AddUObject(this, &UMatch3TargetManager::HandlePiecesDestroyed);
 }
 
 void UMatch3TargetManager::Clear()
 {
-	OnTargetsInitialized.Unbind();
-	OnATargetUpdated.Unbind();
-	OnATargetComplete.Unbind();
-	OnAllTargetsComplete.Unbind();
-	
+	OnTargetsInitialized.Clear();
+	OnATargetUpdated.Clear();
+	OnATargetComplete.Clear();
+	OnAllTargetsComplete.Clear();
+
 	ActiveTargets.clear();
 }
 
@@ -40,7 +40,7 @@ void UMatch3TargetManager::LoadRandomTargets()
 		ActiveTargets.push_back(NewTargetData);
 	}
 
-	(void)OnTargetsInitialized.ExecuteIfBound(ActiveTargets);
+	OnTargetsInitialized.Broadcast(ActiveTargets);
 }
 
 void UMatch3TargetManager::HandlePiecesDestroyed(vector<EPieceType> Types)
@@ -70,24 +70,24 @@ void UMatch3TargetManager::HandlePiecesDestroyed(vector<EPieceType> Types)
 	if (Target->Amount <= 0)
 	{
 		Target->Amount = 0;
-		(void)OnATargetComplete.ExecuteIfBound(Target);
+		OnATargetComplete.Broadcast(Target);
 		CheckIsAllTargetsComplete();
 	}
 	else
 	{
-		(void)OnATargetUpdated.ExecuteIfBound(Target);
+		OnATargetUpdated.Broadcast(Target);
 	}
 }
 
-void  UMatch3TargetManager::CheckIsAllTargetsComplete()
+void UMatch3TargetManager::CheckIsAllTargetsComplete()
 {
 	const auto IsAllComplete = boolinq::from(ActiveTargets).all([](const UTargetData* Target)
 	{
 		return Target->Amount <= 0;
 	});
 
-	if(IsAllComplete)
+	if (IsAllComplete)
 	{
-		(void)OnAllTargetsComplete.ExecuteIfBound();
+		OnAllTargetsComplete.Broadcast();
 	}
 }
