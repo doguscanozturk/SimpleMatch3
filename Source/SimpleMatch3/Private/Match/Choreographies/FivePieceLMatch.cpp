@@ -9,7 +9,8 @@ int UFivePieceLMatch::GetMinPieceRequirement()
 void UFivePieceLMatch::Initialize()
 {
 	const auto Choreography = GetChoreography();
-	const auto SecondVersion = MatrixHelpers::RotateMatrixAnticlockwise(Choreography);
+	auto SecondVersion = MatrixHelpers::RotateMatrixAnticlockwise(Choreography);
+	SecondVersion.SetStartIndexOffset(FIntPoint(0, -2));
 	const auto ThirdVersion = MatrixHelpers::RotateMatrixAnticlockwise(SecondVersion);
 	const auto FourthVersion = MatrixHelpers::RotateMatrixAnticlockwise(ThirdVersion);
 

@@ -2,6 +2,7 @@
 #include "Match/MatchIdentity.h"
 #include "Match/Choreographies/FivePieceLMatch.h"
 #include "Match/Choreographies/FivePieceStraightMatch.h"
+#include "Match/Choreographies/FivePieceTMatch.h"
 #include "Match/Choreographies/FourPieceSquareMatch.h"
 #include "Match/Choreographies/FourPieceStraightMatch.h"
 #include "Match/Choreographies/ThreePieceStraightMatch.h"
@@ -9,7 +10,8 @@
 
 UMatchIdentifier::UMatchIdentifier()
 {
-	PossibleMatchesInCheckOrder = {
+	PossibleMatchShapesInCheckOrder = {
+		NewObject<UFivePieceTMatch>(),
 		NewObject<UFivePieceLMatch>(),
 		NewObject<UFivePieceStraightMatch>(),
 		NewObject<UFourPieceStraightMatch>(),
@@ -17,7 +19,7 @@ UMatchIdentifier::UMatchIdentifier()
 		NewObject<UThreePieceStraightMatch>()
 	};
 
-	for (const auto Match : PossibleMatchesInCheckOrder)
+	for (const auto Match : PossibleMatchShapesInCheckOrder)
 	{
 		Match->Initialize();
 	}
@@ -35,12 +37,12 @@ vector<FMatchIdentity> UMatchIdentifier::Identify(const std::vector<APiece*>& Ma
 
 	vector<FMatchIdentity> MatchIdentities;
 
-	for (int i = 0; i < PossibleMatchesInCheckOrder.Num(); i++)
+	for (int i = 0; i < PossibleMatchShapesInCheckOrder.Num(); i++)
 	{
 		FMatchIdentity MatchIdentity;
 		try
 		{
-			MatchIdentity = PossibleMatchesInCheckOrder[i]->Check(MatchingPieces);
+			MatchIdentity = PossibleMatchShapesInCheckOrder[i]->CheckShape(MatchingPieces);
 		}
 		catch (NoMatchFoundException)
 		{

@@ -29,5 +29,5 @@ private:
 	TArray<FMatchIdentity> MatchIdentitiesCache;
 	
 	UPROPERTY()
-	TArray<UMatch*> PossibleMatchesInCheckOrder;
+	TArray<UMatch*> PossibleMatchShapesInCheckOrder;
 };
