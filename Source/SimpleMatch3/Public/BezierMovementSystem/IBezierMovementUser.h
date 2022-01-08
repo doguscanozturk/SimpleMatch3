@@ -15,4 +15,6 @@ class IBezierMovementUser
 public:
 	
 	virtual void SetLocation(FVector Location) = 0;
+
+	virtual void OnAborted() = 0;
 };

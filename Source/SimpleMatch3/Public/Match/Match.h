@@ -16,7 +16,7 @@ public:
 	
 	virtual int GetMinPieceRequirement();
 	
-	FMatchIdentity Check(std::vector<APiece*> MatchingPieces);
+	FMatchIdentity CheckShape(std::vector<APiece*> MatchingPieces);
 
 protected:	
 	UPROPERTY(VisibleAnywhere)

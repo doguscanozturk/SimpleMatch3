@@ -43,6 +43,11 @@ ATile* UTileGrid::GetNeighborTile(const ATile* Tile, ESwipeDirection NeighborDir
 {
 	FIntPoint NeighborIndex;
 
+	if (Tile == nullptr)
+	{
+		return nullptr;
+	}
+
 	switch (NeighborDirection)
 	{
 	case ESwipeDirection::Left:
@@ -51,7 +56,6 @@ ATile* UTileGrid::GetNeighborTile(const ATile* Tile, ESwipeDirection NeighborDir
 			return nullptr;
 		}
 		NeighborIndex = FIntPoint(Tile->I, Tile->J - 1);
-
 		break;
 	case ESwipeDirection::Right:
 		if (Tile->J + 1 >= Height)
@@ -66,10 +70,8 @@ ATile* UTileGrid::GetNeighborTile(const ATile* Tile, ESwipeDirection NeighborDir
 			return nullptr;
 		}
 		NeighborIndex = FIntPoint(Tile->I - 1, Tile->J);
-
 		break;
 	case ESwipeDirection::Down:
-
 		if (Tile->I + 1 >= Width)
 		{
 			return nullptr;
@@ -77,8 +79,7 @@ ATile* UTileGrid::GetNeighborTile(const ATile* Tile, ESwipeDirection NeighborDir
 		NeighborIndex = FIntPoint(Tile->I + 1, Tile->J);
 		break;
 	}
-
-
+	
 	const auto NeighborTile = GetTile(NeighborIndex.X, NeighborIndex.Y);
 	// UE_LOG(LogTemp, Warning, TEXT("GetNeighborTile Self %s"), *Tile->GetName());
 	// UE_LOG(LogTemp, Warning, TEXT("GetNeighborTile Neighbor %s"), *NeighborTile->GetName());

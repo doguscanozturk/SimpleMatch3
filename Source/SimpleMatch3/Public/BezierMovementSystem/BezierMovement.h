@@ -27,6 +27,8 @@ public:
 	
 	bool GetIsComplete() const;
 
+	TScriptInterface<IBezierMovementUser> GetUser() const;
+	
 private:
 	UPROPERTY()
 	float TotalDuration;

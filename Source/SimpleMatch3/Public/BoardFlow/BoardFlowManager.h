@@ -15,7 +15,7 @@ public:
 	
 	void Initialize(UTileGrid* tileGrid, UBasicMatch3ToolProvider* basicMatch3ToolProvider, AGridController* gridController);
 
-	void Clear();
+	void Uninitialize();
 
 	DECLARE_EVENT_OneParam(ABoardFlowManager, FOnPiecesDestroyed, vector<EPieceType>)
 	FOnPiecesDestroyed OnPiecesDestroyed;
@@ -27,20 +27,27 @@ protected:
 	UPROPERTY()
 	UBasicMatch3ToolProvider* BasicMatch3ToolProvider;
 
-	void MovePiece(ATile* StartTile, ATile* EndTile, float Duration, APiece* Piece) const;
+	UPROPERTY()
+	TArray<FTimerHandle> ActiveTimerHandles;
+	
+	bool IsInitialized;
+	
+	void MovePiece(ATile* StartTile, ATile* EndTile, float Duration, APiece* Piece);
 	
 	void TrySwapTiles(ATile* Tile, ESwipeDirection Direction);
 
 	void SwapTiles(ATile* TileA, ATile* TileB, bool CanTriggerRevertSwap);
-
+	
 	/** Starts checking from CheckTile and returns true if it finds a match.*/
-	bool CheckMatch(ATile* CheckTile) const;
+	bool CheckMatch(ATile* CheckTile);
 
-	void OnTileIsEmpty(ATile* Tile) const;
+	void TryPullPieceOfTopTile(ATile* Tile);
+	
+	void GenerateNewPieceIfTileIsAtPeak(ATile* Tile);
 
-	void OnTilesAreEmpty(vector<ATile*> Tiles) const;
+	void OnTilesAreEmpty(vector<ATile*> Tiles);
 
-	void OnPieceMovementCompleted(ATile* Tile, APiece* Piece) const;
+	void OnPieceMovementCompleted(ATile* Tile, APiece* Piece);
 
-	void GenerateNewPieceFromPeak(ATile* PeakTile) const;
+	void GenerateNewPieceFromPeak(ATile* PeakTile);
 };

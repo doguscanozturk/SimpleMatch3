@@ -24,7 +24,7 @@ public:
 
 	UBezierMovement* StartMovement(FVector StartPoint, FVector EndPoint, FVector ControlPointOne, FVector ControlPointTwo,
 	                               float Duration, TScriptInterface<IBezierMovementUser> User);
-
+	
 	void Clear();
 
 private:

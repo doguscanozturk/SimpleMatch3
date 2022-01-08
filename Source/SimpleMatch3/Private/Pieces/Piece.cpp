@@ -38,6 +38,11 @@ void APiece::SetLocation(const FVector Location)
 	SetActorLocation(Location);
 }
 
+void APiece::OnAborted()
+{
+	DestroySelf();
+}
+
 void APiece::TriggerScaleDownAndDestroy()
 {
 	IsPlayingMatchAnimation = true;

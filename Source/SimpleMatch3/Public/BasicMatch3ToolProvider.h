@@ -14,6 +14,8 @@ class UBasicMatch3ToolProvider : public UObject
 public:
 	void Initialize(const UBlueprintReferences* BlueprintReferences);
 	
+	void Uninitialize();
+
 	void Clear();
 
 	UPROPERTY(VisibleAnywhere)

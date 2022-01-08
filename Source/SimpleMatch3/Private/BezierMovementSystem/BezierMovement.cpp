@@ -25,6 +25,11 @@ bool UBezierMovement::GetIsComplete() const
 	return IsComplete;
 }
 
+TScriptInterface<IBezierMovementUser> UBezierMovement::GetUser() const
+{
+	return User;
+}
+
 void UBezierMovement::Advance(float DeltaTime)
 {
 	CurrentDuration += DeltaTime;

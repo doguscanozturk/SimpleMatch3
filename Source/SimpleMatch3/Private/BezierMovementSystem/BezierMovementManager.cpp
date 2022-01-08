@@ -66,6 +66,11 @@ UBezierMovement* ABezierMovementManager::StartMovement(FVector StartPoint, FVect
 
 void ABezierMovementManager::Clear()
 {
+	for (const auto Movement : ActiveMovements)
+	{
+		Movement->IsDirty = true;
+		Movement->GetUser()->OnAborted();
+	}
 	ActiveMovements.clear();
 }
 

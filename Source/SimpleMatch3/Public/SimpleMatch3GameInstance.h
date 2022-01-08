@@ -19,13 +19,17 @@ public:
 
 	DECLARE_EVENT(USimpleMatch3GameInstance, FOnRestartClicked)
 	FOnRestartClicked OnRestartClicked;
-
+	
+	UFUNCTION(BlueprintCallable)
+	void Clear();
+	
 private:
 	UFUNCTION(BlueprintCallable)
 	virtual void Init() override;
 
 	UFUNCTION(BlueprintCallable)
-	void Clear();
+	void Uninitialize();
+
 	
 	UFUNCTION(BlueprintCallable)
 	void TriggerRestartClicked();

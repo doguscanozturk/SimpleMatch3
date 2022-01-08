@@ -11,13 +11,23 @@ ABoardFlowManager::ABoardFlowManager()
 
 void ABoardFlowManager::Initialize(UTileGrid* tileGrid, UBasicMatch3ToolProvider* basicMatch3ToolProvider, AGridController* gridController)
 {
+	IsInitialized = true;
 	TileGrid = tileGrid;
 	BasicMatch3ToolProvider = basicMatch3ToolProvider;
 	gridController->OnSwipeApproved.AddUObject(this, &ABoardFlowManager::TrySwapTiles);
 }
 
-void ABoardFlowManager::Clear()
+void ABoardFlowManager::Uninitialize()
 {
+	IsInitialized = false;
+	OnPiecesDestroyed.Clear();
+
+	for (auto TimerHandle : ActiveTimerHandles)
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandle);
+	}
+	ActiveTimerHandles.Empty();
+
 	BasicMatch3ToolProvider = nullptr;
 	TileGrid = nullptr;
 }
@@ -49,9 +59,20 @@ void ABoardFlowManager::SwapTiles(ATile* TileA, ATile* TileB, const bool CanTrig
 	{
 		MovementB->OnComplete.AddLambda([this, TileA, TileB]
 		{
-			FTimerHandle ThisHandle;
-			GetGameInstance()->GetTimerManager().SetTimer(ThisHandle, FTimerDelegate::CreateLambda([this, TileA, TileB]
+			if (!IsInitialized)
 			{
+				return;
+			}
+
+			FTimerHandle Handle;
+			GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([this, TileA, TileB, &Handle]
+			{
+				if (!IsInitialized)
+				{
+					return;
+				}
+				ActiveTimerHandles.Remove(Handle);
+
 				const auto AHasMatch = CheckMatch(TileA);
 				const auto BHasMatch = CheckMatch(TileB);
 
@@ -60,11 +81,12 @@ void ABoardFlowManager::SwapTiles(ATile* TileA, ATile* TileB, const bool CanTrig
 					SwapTiles(TileB, TileA, false);
 				}
 			}), GameplayConstants::UnderstandabilityDelayAfterSwap, false);
+			ActiveTimerHandles.Add(Handle);
 		});
 	}
 }
 
-bool ABoardFlowManager::CheckMatch(ATile* CheckTile) const
+bool ABoardFlowManager::CheckMatch(ATile* CheckTile)
 {
 	const vector<APiece*> LocalMatches = BasicMatch3ToolProvider->MatchFinder->TryFindLocalMatch(TileGrid, CheckTile);
 
@@ -90,8 +112,10 @@ bool ABoardFlowManager::CheckMatch(ATile* CheckTile) const
 				}
 
 				FTimerHandle Handle;
-				GetGameInstance()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([=]
+				GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([=]
 				{
+					ActiveTimerHandles.Remove(Handle);
+
 					for (const auto Tile : AffectedTiles)
 					{
 						const auto DetachedPiece = Tile->DetachPiece();
@@ -105,6 +129,7 @@ bool ABoardFlowManager::CheckMatch(ATile* CheckTile) const
 
 					OnTilesAreEmpty(AffectedTiles);
 				}), 0.2f + GameplayConstants::LengthOfAFrame60 * 2, false);
+				ActiveTimerHandles.Add(Handle);
 			}
 
 			return true;
@@ -116,10 +141,9 @@ bool ABoardFlowManager::CheckMatch(ATile* CheckTile) const
 	return false;
 }
 
-
-void ABoardFlowManager::OnTileIsEmpty(ATile* Tile) const
+void ABoardFlowManager::TryPullPieceOfTopTile(ATile* Tile)
 {
-	if (Tile->IsTargetedByMovingPiece && Tile->AttachedPiece != nullptr)
+	if (!IsInitialized || Tile->IsTargetedByMovingPiece && Tile->AttachedPiece != nullptr)
 	{
 		return;
 	}
@@ -131,41 +155,53 @@ void ABoardFlowManager::OnTileIsEmpty(ATile* Tile) const
 
 		MovePiece(TopTile, Tile, GameplayConstants::PieceMoveDuration, TopPiece);
 
-		FTimerHandle ThisHandle;
-		GetGameInstance()->GetTimerManager().SetTimer(ThisHandle, FTimerDelegate::CreateLambda([=]
+		FTimerHandle Handle;
+		GetGameInstance()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([=]
 		{
-			OnTileIsEmpty(TopTile);
+			ActiveTimerHandles.Remove(Handle);
+
+			TryPullPieceOfTopTile(TopTile);
 		}), GameplayConstants::DelayBeforePullingUpperTile, false);
+
+		ActiveTimerHandles.Add(Handle);
 	}
 
+	GenerateNewPieceIfTileIsAtPeak(Tile);
+}
+void ABoardFlowManager::GenerateNewPieceIfTileIsAtPeak(ATile* Tile)
+{
 	if (Tile->I == 0)
 	{
-		FTimerHandle ThisHandle;
-		GetGameInstance()->GetTimerManager().SetTimer(ThisHandle, FTimerDelegate::CreateLambda([=]
+		FTimerHandle Handle;
+		GetGameInstance()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([=]
 		{
+			ActiveTimerHandles.Remove(Handle);
+
 			if (!Tile->IsTargetedByMovingPiece)
 			{
 				GenerateNewPieceFromPeak(Tile);
 			}
 		}), GameplayConstants::DelayBeforePullingUpperTile, false);
+
+		ActiveTimerHandles.Add(Handle);
 	}
 }
 
-void ABoardFlowManager::OnTilesAreEmpty(vector<ATile*> Tiles) const
+void ABoardFlowManager::OnTilesAreEmpty(vector<ATile*> Tiles)
 {
 	for (const auto Tile : Tiles)
 	{
-		OnTileIsEmpty(Tile);
+		TryPullPieceOfTopTile(Tile);
 	}
 }
 
-void ABoardFlowManager::OnPieceMovementCompleted(ATile* Tile, APiece* Piece) const
+void ABoardFlowManager::OnPieceMovementCompleted(ATile* Tile, APiece* Piece)
 {
 	const auto BottomTile = TileGrid->GetNeighborTile(Tile, ESwipeDirection::Down);
 	if (BottomTile != nullptr && !BottomTile->IsTargetedByMovingPiece && BottomTile->AttachedPiece == nullptr)
 	{
 		MovePiece(Tile, BottomTile, GameplayConstants::PieceMoveDuration, Piece);
-		OnTileIsEmpty(Tile);
+		TryPullPieceOfTopTile(Tile);
 	}
 	else
 	{
@@ -178,7 +214,7 @@ void ABoardFlowManager::OnPieceMovementCompleted(ATile* Tile, APiece* Piece) con
 	}
 }
 
-void ABoardFlowManager::GenerateNewPieceFromPeak(ATile* PeakTile) const
+void ABoardFlowManager::GenerateNewPieceFromPeak(ATile* PeakTile)
 {
 	const auto NewPiece = BasicMatch3ToolProvider->PieceGenerator->GenerateRandom(FVector::ZeroVector, FRotator::ZeroRotator);
 	const auto TargetTilePosition = PeakTile->GetActorLocation();
@@ -189,7 +225,7 @@ void ABoardFlowManager::GenerateNewPieceFromPeak(ATile* PeakTile) const
 }
 
 
-void ABoardFlowManager::MovePiece(ATile* StartTile, ATile* EndTile, const float Duration, APiece* Piece) const
+void ABoardFlowManager::MovePiece(ATile* StartTile, ATile* EndTile, const float Duration, APiece* Piece)
 {
 	const auto StartPosition = StartTile == nullptr ? Piece->GetActorLocation() : StartTile->GetActorLocation();
 	if (StartTile != nullptr)

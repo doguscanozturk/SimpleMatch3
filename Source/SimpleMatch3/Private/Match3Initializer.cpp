@@ -40,15 +40,15 @@ void AMatch3Initializer::Uninitialize()
 {
 	IsInitialized = false;
 
+	BoardFlowManager->Uninitialize();
+	BoardFlowManager->Destroy();
+	BoardFlowManager = nullptr;
+	
 	TargetManager->Clear();
 	TargetManager = nullptr;
 
 	UIManager->Clear();
 	UIManager = nullptr;
-
-	BoardFlowManager->Clear();
-	BoardFlowManager->Destroy();
-	BoardFlowManager = nullptr;
 
 	TileGrid->Clear();
 	TileGrid = nullptr;
@@ -58,7 +58,9 @@ void AMatch3Initializer::Uninitialize()
 
 	GridGenerator->Clear();
 	GridGenerator = nullptr;
-	
+
+	GameInstance->Clear();
+
 	GEngine->ForceGarbageCollection();
 }
 

@@ -10,12 +10,17 @@ void USimpleMatch3GameInstance::Init()
 	BasicMatch3ToolProvider->Initialize(BlueprintReferences);
 }
 
-void USimpleMatch3GameInstance::Clear()
+void USimpleMatch3GameInstance::Uninitialize()
 {
 	BlueprintReferences = nullptr;
 	
-	BasicMatch3ToolProvider->Clear();
+	BasicMatch3ToolProvider->Uninitialize();
 	BasicMatch3ToolProvider = nullptr;
+}
+
+void USimpleMatch3GameInstance::Clear()
+{
+	BasicMatch3ToolProvider->Clear();
 }
 
 void USimpleMatch3GameInstance::TriggerRestartClicked()

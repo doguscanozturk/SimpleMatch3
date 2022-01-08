@@ -1,7 +1,5 @@
 #include "Grid/Tile.h"
 
-#include "Utility/TestMacros.h"
-
 ATile::ATile()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -10,18 +8,21 @@ ATile::ATile()
 void ATile::Clear()
 {
 	const auto Piece = DetachPiece();
-	Piece->Destroy();
+	if (Piece != nullptr)
+	{
+		Piece->Destroy();
+	}
 }
 
 void ATile::AttachPiece(APiece* Piece, const bool ShouldUpdatePositionInstantly)
 {
-	this->AttachedPiece = Piece;
-	if(Piece == nullptr)
+	if (Piece == nullptr)
 	{
-		DEBUG("WTF that shit is null [%i][%i]", I, J);
-		return;
+		throw new std::exception("Can't attach null piece!");
 	}
 	
+	this->AttachedPiece = Piece;
+
 	Piece->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 	if (ShouldUpdatePositionInstantly)
 	{
@@ -35,7 +36,6 @@ APiece* ATile::DetachPiece()
 	if (AttachedPiece == nullptr)
 	{
 		return nullptr;
-		throw std::exception("Can't detach null piece.");
 	}
 
 	const auto DetachedPiece = AttachedPiece;

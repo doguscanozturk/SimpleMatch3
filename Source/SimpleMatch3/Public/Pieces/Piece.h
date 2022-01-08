@@ -50,6 +50,8 @@ public:
 	APiece();
 
 	virtual void SetLocation(FVector Location) override;
+	
+	virtual void OnAborted() override;
 
 	void Set(FPieceData Settings);
 	

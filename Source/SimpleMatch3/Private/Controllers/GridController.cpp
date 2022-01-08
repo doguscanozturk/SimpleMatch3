@@ -67,9 +67,7 @@ void AGridController::OnDrag(ETouchIndex::Type FingerIndex, FVector Location)
 	{
 		IsDragDetectedOnce = true;
 		const auto SwipeDirection = DifferenceX < 0 ? ESwipeDirection::Right : ESwipeDirection::Left;
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, StaticEnum<ESwipeDirection>()->GetValueAsString(SwipeDirection));
 		OnSwipeApproved.Broadcast(LastTouchedTile, SwipeDirection);
-
 		return;
 	}
 
@@ -79,7 +77,6 @@ void AGridController::OnDrag(ETouchIndex::Type FingerIndex, FVector Location)
 	{
 		IsDragDetectedOnce = true;
 		const auto SwipeDirection = DifferenceY < 0 ? ESwipeDirection::Down : ESwipeDirection::Up;
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Cyan, StaticEnum<ESwipeDirection>()->GetValueAsString(SwipeDirection));
 		OnSwipeApproved.Broadcast(LastTouchedTile, SwipeDirection);
 	}
 }

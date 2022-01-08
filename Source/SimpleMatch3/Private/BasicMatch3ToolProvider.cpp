@@ -9,7 +9,7 @@ void UBasicMatch3ToolProvider::Initialize(const UBlueprintReferences* BlueprintR
 	PieceGenerator->Initialize(BlueprintReferences->PieceBP, Cast<UPieceVariations>(BlueprintReferences->PieceSettings));
 }
 
-void UBasicMatch3ToolProvider::Clear()
+void UBasicMatch3ToolProvider::Uninitialize()
 {
 	PieceGenerator->Clear();
 	PieceGenerator = nullptr;
@@ -25,4 +25,9 @@ void UBasicMatch3ToolProvider::Clear()
 	BezierMovementManager = nullptr;
 
 	GEngine->ForceGarbageCollection();
+}
+
+void UBasicMatch3ToolProvider::Clear()
+{
+	BezierMovementManager->Clear();
 }
