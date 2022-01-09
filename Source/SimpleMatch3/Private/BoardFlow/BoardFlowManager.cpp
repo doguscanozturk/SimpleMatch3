@@ -73,10 +73,10 @@ void ABoardFlowManager::SwapTiles(ATile* TileA, ATile* TileB, const bool CanTrig
 				}
 				ActiveTimerHandles.Remove(Handle);
 
-				const auto AHasMatch = CheckMatch(TileA);
-				const auto BHasMatch = CheckMatch(TileB);
+				const auto TileAHasIdentifiedMatch = TryIdentifyAndExecuteMatch(TileA);
+				const auto TileBHasIdentifiedMatch = TryIdentifyAndExecuteMatch(TileB);
 
-				if (!AHasMatch && !BHasMatch)
+				if (!TileAHasIdentifiedMatch && !TileBHasIdentifiedMatch)
 				{
 					SwapTiles(TileB, TileA, false);
 				}
@@ -86,7 +86,7 @@ void ABoardFlowManager::SwapTiles(ATile* TileA, ATile* TileB, const bool CanTrig
 	}
 }
 
-bool ABoardFlowManager::CheckMatch(ATile* CheckTile)
+bool ABoardFlowManager::TryIdentifyAndExecuteMatch(ATile* CheckTile)
 {
 	const vector<APiece*> LocalMatches = BasicMatch3ToolProvider->MatchFinder->TryFindLocalMatch(TileGrid, CheckTile);
 
@@ -206,7 +206,7 @@ void ABoardFlowManager::OnPieceMovementCompleted(ATile* Tile, APiece* Piece)
 	else
 	{
 		Tile->AttachPiece(Piece);
-		const auto AnyMatchFound = CheckMatch(Tile);
+		const auto AnyMatchFound = TryIdentifyAndExecuteMatch(Tile);
 		if (!AnyMatchFound)
 		{
 			Piece->TriggerBounce();

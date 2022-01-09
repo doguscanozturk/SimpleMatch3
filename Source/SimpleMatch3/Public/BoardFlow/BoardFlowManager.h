@@ -39,7 +39,7 @@ protected:
 	void SwapTiles(ATile* TileA, ATile* TileB, bool CanTriggerRevertSwap);
 	
 	/** Starts checking from CheckTile and returns true if it finds a match.*/
-	bool CheckMatch(ATile* CheckTile);
+	bool TryIdentifyAndExecuteMatch(ATile* CheckTile);
 
 	void TryPullPieceOfTopTile(ATile* Tile);
 	
