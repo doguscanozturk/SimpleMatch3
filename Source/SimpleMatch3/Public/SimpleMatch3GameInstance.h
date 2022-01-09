@@ -29,7 +29,6 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void Uninitialize();
-
 	
 	UFUNCTION(BlueprintCallable)
 	void TriggerRestartClicked();

@@ -29,13 +29,7 @@ protected:
 
 	UPROPERTY()
 	UTileGrid* TileGrid;
-
-	UPROPERTY()
-	UGridGenerator* GridGenerator;
-
-	UPROPERTY()
-	UInitialMatchRemover* InitialMatchRemover;
-
+	
 	UPROPERTY()
 	UMatch3UIManager* UIManager;
 

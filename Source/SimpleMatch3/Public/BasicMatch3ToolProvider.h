@@ -1,4 +1,6 @@
 ﻿#pragma once
+class UInitialMatchRemover;
+#include "Grid/GridGenerator.h"
 #include "BezierMovementSystem/BezierMovementManager.h"
 #include "DataAssets/BlueprintReferences.h"
 #include "Pieces/PieceGenerator.h"
@@ -12,11 +14,11 @@ class UBasicMatch3ToolProvider : public UObject
 	GENERATED_BODY()
 	
 public:
-	void Initialize(const UBlueprintReferences* BlueprintReferences);
+	void Initialize(UBlueprintReferences* BlueprintReferences);
 	
 	void Uninitialize();
 
-	void Clear();
+	void Clear() const;
 
 	UPROPERTY(VisibleAnywhere)
 	ABezierMovementManager* BezierMovementManager;
@@ -29,4 +31,10 @@ public:
 	
 	UPROPERTY(VisibleAnywhere)
 	UPieceGenerator* PieceGenerator;
+
+	UPROPERTY()
+	UGridGenerator* GridGenerator;
+	
+	UPROPERTY()
+	UInitialMatchRemover* InitialMatchRemover;
 };

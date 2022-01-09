@@ -14,14 +14,8 @@ void AMatch3Initializer::Initialize()
 {
 	IsInitialized = true;
 
-	GridGenerator = NewObject<UGridGenerator>(this);
-	GridGenerator->Initialize(GameInstance->BasicMatch3ToolProvider->PieceGenerator, GameInstance->BlueprintReferences);
-
-	InitialMatchRemover = NewObject<UInitialMatchRemover>(this);
-	InitialMatchRemover->Initialize(GameInstance->BasicMatch3ToolProvider);
-
-	TileGrid = GridGenerator->Generate(GridSize);
-	InitialMatchRemover->RemoveInitialMatches(TileGrid);
+	TileGrid = GameInstance->BasicMatch3ToolProvider->GridGenerator->Generate(GridSize);
+	GameInstance->BasicMatch3ToolProvider->InitialMatchRemover->RemoveInitialMatches(TileGrid);
 	CameraHelpers::PlaceCameraToTheCenterOfTheGrid(TileGrid, MainCamera);
 
 	BoardFlowManager = Cast<ABoardFlowManager>(GetWorld()->SpawnActor(GameInstance->BlueprintReferences->BoardFlowManagerBP));
@@ -52,12 +46,6 @@ void AMatch3Initializer::Uninitialize()
 
 	TileGrid->Clear();
 	TileGrid = nullptr;
-
-	InitialMatchRemover->Clear();
-	InitialMatchRemover = nullptr;
-
-	GridGenerator->Clear();
-	GridGenerator = nullptr;
 
 	GameInstance->Clear();
 
