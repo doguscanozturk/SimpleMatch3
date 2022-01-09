@@ -17,3 +17,4 @@
 * When all objectives at the target panel get finished you successfully complete that level.
 
 ### Gameplay Sample
+https://user-images.githubusercontent.com/12052479/148691147-0353bd06-3348-4135-a5a6-b51cccee9fef.mp4
