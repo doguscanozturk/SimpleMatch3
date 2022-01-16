@@ -16,11 +16,11 @@ public:
 	
 	void LoadPanels();
 	
-	void HandleTargetsInitialized(std::vector<UTargetData*> TargetDatas);
+	void HandleTargetsInitialized(std::vector<TWeakObjectPtr<UTargetData>> TargetDatas);
 	
-	void HandleATargetUpdated(const UTargetData* TargetData);
+	void HandleATargetUpdated(const TWeakObjectPtr<UTargetData> TargetData);
 	
-	void HandleATargetComplete(const UTargetData* TargetData);
+	void HandleATargetComplete(const TWeakObjectPtr<UTargetData> TargetData);
 	
 	void HandleAllTargetsComplete();
 

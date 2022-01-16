@@ -1,4 +1,5 @@
 #include "Match3Initializer.h"
+#include "Constants/UXConstants.h"
 #include "Controllers/GridController.h"
 #include "Engine/AssetManager.h"
 #include "Grid/GridGenerator.h"
@@ -37,7 +38,7 @@ void AMatch3Initializer::Uninitialize()
 	BoardFlowManager->Uninitialize();
 	BoardFlowManager->Destroy();
 	BoardFlowManager = nullptr;
-	
+
 	TargetManager->Clear();
 	TargetManager = nullptr;
 
@@ -62,7 +63,7 @@ void AMatch3Initializer::BeginPlay()
 
 	GridController = Cast<AGridController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	GridController->SetViewTargetWithBlend(MainCamera);
-	
+
 	Initialize();
 }
 
@@ -70,5 +71,7 @@ void AMatch3Initializer::HandleRestartClicked()
 {
 	Uninitialize();
 
-	Initialize();
+	FTimerHandle Handle;
+	GetWorldTimerManager().SetTimer(Handle, this, &AMatch3Initializer::Initialize,
+		UXConstants::DelayBeforeInitializationWhenRestarting, false);
 }

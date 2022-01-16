@@ -50,7 +50,7 @@ void UMatch3UIManager::LoadPanels()
 	}
 }
 
-void UMatch3UIManager::HandleTargetsInitialized(const std::vector<UTargetData*> TargetDatas)
+void UMatch3UIManager::HandleTargetsInitialized(const std::vector<TWeakObjectPtr<UTargetData>> TargetDatas)
 {
 	for (int i = 0; i < TargetDatas.size(); ++i)
 	{
@@ -65,7 +65,7 @@ void UMatch3UIManager::HandleTargetsInitialized(const std::vector<UTargetData*> 
 	}
 }
 
-void UMatch3UIManager::HandleATargetUpdated(const UTargetData* TargetData)
+void UMatch3UIManager::HandleATargetUpdated(const TWeakObjectPtr<UTargetData> TargetData)
 {
 	const auto PieceDataTuple = PieceVariations->TryGetPieceData(PieceVariations->Variations, TargetData->Type);
 	const auto IsDataExist = std::get<bool>(PieceDataTuple);
@@ -80,7 +80,7 @@ void UMatch3UIManager::HandleATargetUpdated(const UTargetData* TargetData)
 	TargetUI->UpdateAmount(TargetData->Amount);
 }
 
-void UMatch3UIManager::HandleATargetComplete(const UTargetData* TargetData)
+void UMatch3UIManager::HandleATargetComplete(const TWeakObjectPtr<UTargetData> TargetData)
 {
 	const auto TargetUI = TargetPanel->TryGetTargetUI(TargetData->Type);
 	TargetUI->SetCheckmarkActive(true);

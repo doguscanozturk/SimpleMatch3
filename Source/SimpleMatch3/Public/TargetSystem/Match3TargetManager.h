@@ -26,13 +26,13 @@ class UMatch3TargetManager : public UObject
 	GENERATED_BODY()
 	
 public:
-	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetsInitialized, std::vector<UTargetData*>)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetsInitialized, std::vector<TWeakObjectPtr<UTargetData>>)
 	FOnTargetsInitialized OnTargetsInitialized;
 	
-	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetUpdated, const UTargetData*)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnTargetUpdated, const TWeakObjectPtr<UTargetData>)
 	FOnTargetUpdated OnATargetUpdated;
 	
-	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnATargetComplete, const UTargetData*)
+	DECLARE_EVENT_OneParam(UMatch3TargetManager, FOnATargetComplete, const TWeakObjectPtr<UTargetData>)
 	FOnATargetComplete OnATargetComplete;
 	
 	DECLARE_EVENT(UMatch3TargetManager, FOnAllTargetsComplete)
@@ -49,5 +49,5 @@ public:
 	void CheckIsAllTargetsComplete();
 	
 private:
-	vector<UTargetData*> ActiveTargets;
+	vector<TWeakObjectPtr<UTargetData>> ActiveTargets;
 };

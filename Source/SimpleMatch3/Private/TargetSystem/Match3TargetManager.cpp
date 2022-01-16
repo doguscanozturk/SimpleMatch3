@@ -19,9 +19,7 @@ void UMatch3TargetManager::Clear()
 
 void UMatch3TargetManager::LoadRandomTargets()
 {
-	ActiveTargets.clear();
 	constexpr int8 TargetAmount = 3;
-
 	for (int i = 0; i < TargetAmount; ++i)
 	{
 		EPieceType RandomPieceType;
@@ -29,12 +27,12 @@ void UMatch3TargetManager::LoadRandomTargets()
 		{
 			RandomPieceType = PieceHelpers::GetRandomPieceType();
 		}
-		while (boolinq::from(ActiveTargets).any([RandomPieceType](const UTargetData* TargetData)
+		while (boolinq::from(ActiveTargets).any([RandomPieceType](const TWeakObjectPtr<UTargetData> TargetData)
 		{
 			return TargetData->Type == RandomPieceType;
 		}));
 
-		auto NewTargetData = NewObject<UTargetData>();
+		const auto NewTargetData = NewObject<UTargetData>(this);
 		NewTargetData->Type = RandomPieceType;
 		NewTargetData->Amount = FMath::RandRange(10, 20);
 		ActiveTargets.push_back(NewTargetData);
@@ -46,8 +44,12 @@ void UMatch3TargetManager::LoadRandomTargets()
 void UMatch3TargetManager::HandlePiecesDestroyed(vector<EPieceType> Types)
 {
 	auto DestroyedType = Types[0];
-	const auto AnyTargetWithThatType = boolinq::from(ActiveTargets).any([DestroyedType](const UTargetData* Target)
+	const auto AnyTargetWithThatType = boolinq::from(ActiveTargets).any([DestroyedType](const TWeakObjectPtr<UTargetData> Target)
 	{
+		if (!Target.IsValid())
+		{
+			return false;
+		}
 		return Target->Type == DestroyedType;
 	});
 
@@ -56,8 +58,12 @@ void UMatch3TargetManager::HandlePiecesDestroyed(vector<EPieceType> Types)
 		return;
 	}
 
-	const auto Target = boolinq::from(ActiveTargets).first([DestroyedType](const UTargetData* Target)
+	const auto Target = boolinq::from(ActiveTargets).first([DestroyedType](const TWeakObjectPtr<UTargetData> Target)
 	{
+		if (!Target.IsValid())
+		{
+			return false;
+		}
 		return Target->Type == DestroyedType;
 	});
 
@@ -81,8 +87,12 @@ void UMatch3TargetManager::HandlePiecesDestroyed(vector<EPieceType> Types)
 
 void UMatch3TargetManager::CheckIsAllTargetsComplete()
 {
-	const auto IsAllComplete = boolinq::from(ActiveTargets).all([](const UTargetData* Target)
+	const auto IsAllComplete = boolinq::from(ActiveTargets).all([](const TWeakObjectPtr<UTargetData> Target)
 	{
+		if (!Target.IsValid())
+		{
+			return false;
+		}
 		return Target->Amount <= 0;
 	});
 
